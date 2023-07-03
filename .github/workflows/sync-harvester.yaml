@@ -1,0 +1,25 @@
+on:
+  push:
+    paths:
+      - 'rabbit/**'
+      - 'config.py'
+      - 'poetry.lock'
+      - 'pyproject.toml'
+
+jobs:
+  sync-harvester:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Copy data
+        run: |
+          make preapre-harvester
+      - name: Commit changes
+        uses: devops-infra/action-commit-push@master
+        with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+          add_timestamp: true
+          commit_prefix: "[AUTO]"
+          commit_message: "Update harvester"
+          force: true
+
